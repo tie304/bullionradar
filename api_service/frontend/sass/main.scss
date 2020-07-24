@@ -1,0 +1,25 @@
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+html {
+    // This defines what 1rem is
+    font-size: 62.5%; //1 rem = 10px; 10px/16px = 62.5
+}
+body {
+    font-family: 'Roboto', sans-serif;
+  background-color: rgb(252, 252, 252);
+}
+$color_primary: #1652F0;
+$color_gold: #FFD700;
+
+
+@import "checkbox";
+@import "header";
+@import "spot_prices";
+@import "products";
+@import "search-dot";

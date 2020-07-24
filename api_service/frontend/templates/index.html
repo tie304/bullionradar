@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Bullionradar</title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="{{ url_for('static', path='css/main.css') }}" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+  <nav class="nav">
+        <div class="nav__logo">
+          <a href="/">
+            <img src="{{ url_for('static', path='images/logo.png') }}" alt="logo">
+          </a>
+        </div>
+    <div class="spot_prices">
+      <div class="spot_prices__gold">
+          <img src="{{ url_for('static', path='images/gold-bars.png') }}"/> <strong>${{gold_oz}} (oz)</strong>
+      </div>
+      <div class="spot_prices__silver">
+           <img src="{{ url_for('static', path='images/silver-bars.png') }}"/> <strong>${{silver_oz}} (oz)</strong>
+      </div>
+    </div>
+  </nav>
+  <header class="header">
+      <div class="header__banner">
+        <h1 class="header__banner--title">
+          Search in-stock gold & silver bullion.
+        </h1>
+        <p class="header__banner--subtext">bullionradar searches hundreds of products to compare prices side by side to quickly find the best investment.</p>
+        <div class="header__banner--search">
+          <h3>Search for:</h3>
+          <div class="header__banner--search-filters">
+              <input type="checkbox" id="gold" name="gold" value="gold">
+              <label for="gold">Gold</label><br>
+              <input type="checkbox" id="silver" name="silver" value="silver">
+              <label for="silver">Silver</label><br>
+          </div>
+          <div class="header__banner--search-price">
+            <input type="radio" id="gte" name="price-gte-lte" value="gte">
+            <label for="gte">$ (GTE)</label><br>
+            <input type="radio" id="lte" name="price-gte-lte" value="lte">
+            <label for="lte">$ (LTE)</label><br>
+            <input type="number" id="price_search" name="price_search" placeholder="$" min="0">
+          </div>
+          <div class="header__banner--search-size">
+            <select name="bullion_size" id="bullion_size">
+              <option disabled selected  hidden>Size</option>
+              <option value="1g">1g</option>
+              <option value="2.5g">2.5g</option>
+              <option value="1oz">1oz</option>
+              <option value="5oz">5oz</option>
+              <option value="10oz">10oz</option>
+          </select>
+          </div>
+            <button id="search" class="header__banner--search-box-button" type="submit"> Search <i class="fas fa-search"></i></button>
+            <span id="search-error"></span>
+            <span id="search-success"></span>
+        </div>
+      </div>
+  </header>
+  <main class="search_results" id="search_results">
+  </main>
+  <div class="search-dot"><i class="fas fa-search"></i></div>
+  <script>
+    var SPOT_PRICES = {
+      gold: {
+        g: {{gold_g}},
+        oz: {{gold_oz}},
+        kg: {{gold_kg}}
+      },
+    silver: {
+      g: {{silver_g}},
+      oz: {{silver_oz}},
+      kg: {{silver_kg}}
+    }
+    }
+
+  </script>
+  <script src="{{ url_for('static', path='js/main.js') }}"></script>
+</body>
+
+</html>
