@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "scss": "node-sass --watch frontend/sass -o static/css",
-    "build": "webpack",
-    "watch": "nodemon --watch frontend --exec 'npm run build'"
+    "watch_scss": "node-sass --watch frontend/sass -o static/css",
+    "build_js": "webpack",
+    "watch_js": "nodemon --watch frontend --exec 'npm run build_js'",
+    "build_scss": "node-sass frontend/sass -o static/css"
   },
   "keywords": [],
   "author": "",

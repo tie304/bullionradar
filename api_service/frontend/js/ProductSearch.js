@@ -74,7 +74,7 @@ class ProductSearch {
 
     getProducts () {
         const filters = this.constructFilters();
-        axios.post("http://localhost:8000/api/products", filters).then((res) => {
+        axios.post(`${window.location.href}api/products`, filters).then((res) => {
             this.clearProducts();
             this.products = res.data;
             this.displayProducts();
@@ -106,8 +106,8 @@ class ProductSearch {
             })
             this.products.forEach((p) => {
             const {costPerUnit, overSpot} = this.calculateCostPerUnit(p.size, p.price, p.type);
-            const goldImg = "<img class='product-card__img' src='http://localhost:8000/static/images/gold-bars.png'/>"
-            const silverImg = "<img class='product-card__img' src='http://localhost:8000/static/images/silver-bars.png'/>"
+            const goldImg = `<img class='product-card__img' src="${window.location.href}static/images/gold-bars.png"/>`
+            const silverImg = `<img class='product-card__img' src='${window.location.href}static/images/silver-bars.png'/>`
             const html =`
             <div class='product-card'>
             <div class="product-card__title">
