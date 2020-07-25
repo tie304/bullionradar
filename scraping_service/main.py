@@ -1,7 +1,6 @@
 import datetime
 import grequests
 import traceback
-from bson import ObjectId
 from depends import _AppState, get_db
 from src.extract_strategy import extract_data_from_html, extract_spot_from_html
 from src.scraping_errors import write_scraping_error_to_db, ScrapingErrors

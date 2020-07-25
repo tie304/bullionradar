@@ -1,0 +1,7 @@
+fastapi[all]
+uvicorn
+aiofiles
+pymongo
+beautifulsoup4
+requests
+validators
