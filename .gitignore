@@ -1,2 +1,4 @@
 node_modules
 run.sh
+__pycache__/
+.idea
