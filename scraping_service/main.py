@@ -10,7 +10,7 @@ REQ_BATCH = 100
 
 db = get_db()
 scraping_jobs = list(db.scraping_jobs.find({}))
-scraping_errors = list(db.scraping_errors.find({}))
+scraping_errors = list(db.scraping_errors.find({})) # TODO change to update job state instead
 error_urls = [error['url'] for error in scraping_errors]
 job_urls = [job['url'] for job in scraping_jobs if job['url'] not in error_urls]
 
