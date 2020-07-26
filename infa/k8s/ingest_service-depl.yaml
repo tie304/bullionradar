@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ingress_service-depl
+  name: ingest_service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ingress_service
+      app: ingest_service
   template:
     metadata:
       labels:
-        app: ingress_service # pod has label of api_service
+        app: ingest_service # pod has label of api_service
     spec:
       containers:
-        - name: ingress_service
+        - name: ingest_service
           image: tylerhanson1/ingress_service:latest
 
 ---
@@ -23,7 +23,7 @@ metadata:
   name: ingest_service-cluster-ip-srv
 spec:
   selector:
-    app: ingest_service-cluster-ip-srv
+    app: ingest_service
   type: ClusterIP # kubectl defaults to cluster ip if not specified
   ports:
     - name: ingest_service-cluster-ip-srv
