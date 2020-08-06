@@ -1,0 +1,19 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: spot-price
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: "Forbid"
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: spot-price-service
+            image: tylerhanson1/spot_price_service
+            command: ["python"]
+            args: ["main.py"]
+          restartPolicy: Never

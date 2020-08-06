@@ -80,6 +80,7 @@ class ProductSearch {
             this.displayProducts();
             this.productDisplay.scrollIntoView({behavior: "smooth"});
         }).catch((error)=> {
+            console.log(error)
             if (error.response.status === 500) {
               return this.setSearchError("Internal server error. Please contact bullionradar")
            }
@@ -102,22 +103,23 @@ class ProductSearch {
             this.setSearchError("")
             this.productDisplay.style.display = "flex"
             this.products.sort((a, b) => {
-                return this.calculateCostPerUnit(a.size, a.price, a.type).overSpot - this.calculateCostPerUnit(b.size, b.price, b.type).overSpot;
+                return this.calculateCostPerUnit(a.metal_size_unit, a.price, a.metal_type).overSpot - this.calculateCostPerUnit(b.metal_size_unit, b.price, b.metal_type).overSpot;
             })
             this.products.forEach((p) => {
-            const {costPerUnit, overSpot} = this.calculateCostPerUnit(p.size, p.price, p.type);
+            console.log(p)
+            const {costPerUnit, overSpot} = this.calculateCostPerUnit(p.metal_size_unit, p.price, p.metal_type);
             const goldImg = `<img class='product-card__img' src="${window.location.href}static/images/gold-bars.png"/>`
             const silverImg = `<img class='product-card__img' src='${window.location.href}static/images/silver-bars.png'/>`
             const html =`
             <div class='product-card'>
             <div class="product-card__title">
-                ${p.type == "silver"? silverImg : goldImg} <a class="product-card__link" href="${p.url}" target="_blank"> <h3 class="product-card__name"> ${p.name}</h3> </a>
+                ${p.metal_type == "silver"? silverImg : goldImg} <a class="product-card__link" href="${p.url}" target="_blank"> <h3 class="product-card__name"> ${p.title}</h3> </a>
             </div>                            
                 <div class="product-card__price">Price: $${p.price}</div> 
-                <div class="product-card__price"> Size: ${p.size}</div> 
-                <div class="product-card__price"> Cost per ${p.size.replace(/[0-9]/g, '').replace(/[^\w\s]|_/g, "")}: $${costPerUnit.toFixed(2)}</div> 
+                <div class="product-card__price"> Size: ${p.metal_size_unit}</div> 
+                <div class="product-card__price"> Cost per ${p.metal_size_unit.replace(/[0-9]/g, '').replace(/[^\w\s]|_/g, "")}: $${costPerUnit.toFixed(2)}</div> 
                 <div class="product-card__price">Total price over spot: $${overSpot.toFixed(2)} ( ${(overSpot / p.price).toFixed(2)}%)</div>                
-                <div class="product-card__price"> In Stock: ${p.in_stock}</div>
+                <div class="product-card__price"> In Stock: ${p.stock}</div>
                 <br>
                 <br>
                 <div class="product-card__price">${p.description}</div>
@@ -129,6 +131,9 @@ class ProductSearch {
     }
     calculateCostPerUnit(size, price, type) {
         // Calculates price over spot
+        if (type === "platinum") {
+            return {costPerUnit: 0, overSpot: 0 }
+        }
         const oz = size.indexOf("oz");
         const g = size.indexOf("g");
         const kg = size.indexOf("kg");
