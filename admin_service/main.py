@@ -3,8 +3,6 @@ import time
 import urllib.parse as urlparse
 from depends import get_db
 from fastapi import FastAPI, File, UploadFile, HTTPException, Query
-from src.validate import validate_csv, validate_requests
-from src.persist import create_products, create_scraping_jobs
 
 
 
@@ -40,6 +38,7 @@ async def apply_processing_to_production(run_id: str):
         hostname = clean_hostname(url=run['url'])
         scraping_data = domain_map.get(hostname)
         db.scraping_jobs.update_one({"url": run['url']}, {"$set": {"scraping_metadata": scraping_data, "parent": hostname}}, upsert=True)
+
     return "successfully applied processing run"
 
 
