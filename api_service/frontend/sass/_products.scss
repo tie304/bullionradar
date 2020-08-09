@@ -23,7 +23,12 @@
   flex-basis: 100%;
   border-radius: 5px;
 
+  & p {
+    font-size: 2rem;
+  }
+
 &__title {
+  font-size: 3rem;
   display: flex;
   align-items: center;
 }
@@ -33,7 +38,7 @@
   }
 
   &__name {
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
   &__img {
     height: 2.5rem;
@@ -42,5 +47,7 @@
 
   &__price {
     font-size: 2rem;
+    font-weight: bold;
+
   }
 }

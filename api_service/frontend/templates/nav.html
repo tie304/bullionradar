@@ -1,0 +1,15 @@
+ <nav class="nav">
+        <div class="nav__logo">
+          <a href="/">
+            <img src="{{ url_for('static', path='images/logo.png') }}" alt="logo">
+          </a>
+        </div>
+    <div class="spot_prices">
+      <div class="spot_prices__gold">
+          <img src="{{ url_for('static', path='images/gold-bars.png') }}"/> <strong>${{gold_oz}} (oz)</strong>
+      </div>
+      <div class="spot_prices__silver">
+           <img src="{{ url_for('static', path='images/silver-bars.png') }}"/> <strong>${{silver_oz}} (oz)</strong>
+      </div>
+    </div>
+  </nav>

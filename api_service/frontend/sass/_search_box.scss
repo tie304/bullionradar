@@ -1,0 +1,82 @@
+  .search-box {
+      display: flex;
+      border-radius: 5px;
+      flex-direction: column;
+      background-color: #fff;
+      text-align: center;
+      min-width: 500px;
+      box-shadow: 2px 2px 4px 1px rgba(0, 0, 0, 0.2);
+
+      & h3 {
+        padding: 1rem;
+        font-size: 3rem;
+      }
+    &--search-page {
+      top: 30%;
+      position: fixed;
+      left: 60%;
+      @media all and (max-width: $desktop_breakpoint) {
+        display: none !important;
+      }
+    }
+    &--main-page {
+       top: 50%;
+       position: absolute;
+      @media all and (max-width: 768px) {
+        min-width: 0;
+        top: 55%;
+      }
+    }
+     &__button {
+      margin-top: 3rem;
+      font-size: 3rem;
+      cursor: pointer;
+      padding: 1rem;
+      border: none;
+      border-radius: 3px;
+      background-color: $color_gold;
+    }
+
+    &__metal-filters {
+      margin-top: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      flex-direction: row;
+      & input {
+        margin: 1rem;
+      }
+    }
+
+    &__search-price {
+       display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      & input {
+        max-width: 7rem;
+        margin: 1rem;
+      }
+      #price_search {
+        padding: 1rem;
+        border-radius: 2px;
+        border: 1px solid black;
+      }
+    }
+    &__search-size {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      & select {
+        font-size: 1.5rem;
+        margin: 2rem;
+        background-color: white;
+        padding: 1rem 4rem 1rem 4rem;
+      }
+    }
+    }
+
+
+

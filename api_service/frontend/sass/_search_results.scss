@@ -1,0 +1,22 @@
+.search {
+  margin-top:  10vh;
+  display: flex;
+  align-items: center;
+
+  @media all and (max-width: 768px) {
+        display: inline-block;
+      }
+
+  &-results {
+    min-width: 50%;
+    & h1 {
+      text-align: center;
+    }
+  }
+
+  &-pagination {
+    a {
+      text-decoration: none;
+    }
+  }
+}

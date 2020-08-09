@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Bullionradar</title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="{{ url_for('static', path='css/main.css') }}" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+{% include 'nav.html'%}
+
+<main class="search">
+    <div class="search-results">
+        {% if not products %}
+            <h1>No products match your search</h1>
+        {% else %}
+            <h1> Showing {{search['pagination_count']}} of {{search['count']}} In stock products</h1>
+        {% endif %}
+        {% for product in products %}
+         <div class='product-card'>
+             <div class="product-card__title">
+                {% if product['metal_type'] == "silver" %}
+                    <img class='product-card__img' src='{{ url_for('static', path='images/silver-bars.png') }}' />
+                {% elif product['metal_type'] == "gold" %}
+                    <img class='product-card__img' src='{{ url_for('static', path='images/gold-bars.png') }}' />
+                {% endif %}
+                 <br>
+             <a class="product-card__link" href="{{product['url']}}" target="_blank">
+                <h3 class="product-card__name"> {{product['title']}}</h3>
+             </a>
+            </div>
+            <div class="product-card__price">Price: ${{product['price']}}</div>
+            <p> Size: {{product['metal_size_unit']}}</p>
+            <p>Cost over spot ${{product['price_over_spot']}} ({{product['price_over_spot_percent']}}%)</p>
+                <br>
+                <br>
+                </div>
+        {% endfor %}
+
+        {% if search['count'] > 50 %}
+        <div class="search-pagination">
+            <span style="font-size: 100px">
+                {% if request.query_params %}
+                    <a href="{{request.url.remove_query_params('skip')}}&skip={{search['prev_skip']}}">&larr; </a>
+                {% else %}
+                    <a href="{{request.url.remove_query_params('skip')}}?&skip={{search['prev_skip']}}">&larr; </a>
+                {% endif %}
+            </span>
+            <span style="font-size: 100px">
+                 {% if request.query_params %}
+                    <a href="{{request.url.remove_query_params('skip')}}&skip={{search['next_skip']}}">&rarr; </a>
+                {% else %}
+                    <a href="{{request.url.remove_query_params('skip')}}?&skip={{search['next_skip']}}">&rarr; </a>
+                {% endif %}
+            </span>
+        </div>
+
+        {% endif %}
+
+
+    </div>
+    <div class="search_box">
+         {% with form_display="search-box--search-page"%}
+            {% include './components/search_box.html'%}
+          {% endwith %}
+    </div>
+</main>
+
+{% include 'footer.html' %}

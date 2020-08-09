@@ -48,7 +48,6 @@ while True:
             job = job_url_map.get(res.url.strip("/"))
             if res.ok and job:
                 try:
-                    print(res.url)
                     data = extract_data_from_html(data=res.text, job=job)
                     data['scrape_update'] = datetime.datetime.utcnow()
 

@@ -2,7 +2,7 @@ import bson
 import time
 import urllib.parse as urlparse
 from depends import get_db
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Query
 from src.validate import validate_csv, validate_requests
 from src.persist import create_products, create_scraping_jobs
 
@@ -18,35 +18,7 @@ def clean_hostname(url):
     return hostname
 
 
-@app.post("/ingest/csv", status_code=201)
-async def create_upload_file(file: UploadFile = File(...)):
-    contents = await file.read()
-    csv_str = contents.decode("utf-8")
-
-    try:
-        validate_csv(csv_str)
-    except AssertionError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="error in csv validation pipeline: " + str(e))
-
-    try:
-        validate_requests(csv_str)
-    except AssertionError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="error in request validation pipeline: " + str(e))
-
-    try:
-        create_products(csv_str)
-        create_scraping_jobs(csv_str)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="error persisting " + str(e))
-
-    return {"success": file.filename + " has passed validation and successfully uploaded"}
-
-
-@app.post("/apply/run", status_code=200)
+@app.post("/admin/apply/processing_run", status_code=200)
 async def apply_processing_to_production(run_id: str):
     db = get_db()
     run_id = bson.ObjectId(run_id)
@@ -69,6 +41,26 @@ async def apply_processing_to_production(run_id: str):
         scraping_data = domain_map.get(hostname)
         db.scraping_jobs.update_one({"url": run['url']}, {"$set": {"scraping_metadata": scraping_data, "parent": hostname}}, upsert=True)
     return "successfully applied processing run"
+
+
+
+@app.put("/update/scraping-job-metadata")
+def update_scraping_service(schema_change: dict, domain: str = Query(None)):
+    db = get_db()
+
+    if not schema_change.get("scraping_metadata"):
+        raise HTTPException(status_code=400, detail="scraping metadata key not provided")
+
+    result = db.scraping_jobs.update_many({"parent": domain},  {"$set": {"scraping_metadata": schema_change.get("scraping_metadata")}})
+
+    return str(result.matched_count) + " updated successfully"
+
+
+@app.get("/admin/get_scraping_errors")
+def get_scraping_errors():
+    db = get_db()
+    return list(db.scraping_errors.find({})) # TODO change to str oid
+
 
 
 

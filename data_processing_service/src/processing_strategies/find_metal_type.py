@@ -1,6 +1,6 @@
 from src.processing_strategies.util import count_indexes
 
-METAL_FORMS = ['gold', 'silver', 'platinum']
+METAL_FORMS = ['gold', 'silver']
 
 def find_metal_type(title, description):
     instances = {}
@@ -19,7 +19,5 @@ def find_metal_type(title, description):
         return "gold"
     elif instances['silver'] > instances['gold'] and instances['silver'] > instances['platinum']:
         return "silver"
-    elif instances['platinum'] > instances['gold'] and instances['platinum'] > instances['gold']:
-        return "platinum"
 
     raise ValueError("unknown metal form")
