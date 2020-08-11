@@ -25,7 +25,11 @@ def read_item(request: Request,
               bullion_form: Optional[str] = Query(None),
               skip: int = Query(0)) -> List[dict]:
     db = get_db()
+
     query = {"stock": True}
+
+    query["error"] =  {"$ne": True}
+
     if gold or silver:
         metal_types = []
         if gold:
@@ -39,7 +43,6 @@ def read_item(request: Request,
 
     if bullion_form:
         query['metal_form'] = bullion_form
-
 
     cursor = db.products.find(query).sort("price_over_spot_percent", 1).limit(50).skip(skip)
     count = cursor.count()
@@ -86,8 +89,3 @@ async def read_item(request: Request):
                                                      "silver_oz": spot_prices.get("silver_oz"),
                                                      "silver_g": spot_prices.get("silver_g"),
                                                      "silver_kg": spot_prices.get("silver_kg")})
-
-
-
-
-

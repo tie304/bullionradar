@@ -16,7 +16,7 @@ def clean_hostname(url):
     return hostname
 
 
-@app.post("/admin/apply/processing_run", status_code=200)
+@app.post("/admin/processing_run", status_code=200)
 async def apply_processing_to_production(run_id: str):
     db = get_db()
     run_id = bson.ObjectId(run_id)
@@ -43,7 +43,7 @@ async def apply_processing_to_production(run_id: str):
 
 
 
-@app.put("/update/scraping-job-metadata")
+@app.put("/admin/domain/scraping-jobs")
 def update_scraping_service(schema_change: dict, domain: str = Query(None)):
     db = get_db()
 
@@ -61,5 +61,95 @@ def get_scraping_errors():
     return list(db.scraping_errors.find({})) # TODO change to str oid
 
 
+@app.delete("/admin/remove-product")
+def remove_product(product_id: str):
+    """
+    Removes product and scraping job for that product
+    """
+    db = get_db()
+    product = db.products.find_one({"_id": bson.ObjectId(product_id)})
+    if not product:
+        raise HTTPException(status=404, detail="Product not found")
+
+    scraping_job = db.scraping_jobs.find_one({"url": product['url']})
+
+
+    db.products.delete_one({"_id": product_id})
+    db.scraping_jobs.delete_one({"_id": scraping_job['_id']})
+
+
+
+@app.post("/admin/products/prune")
+def prune_scraping_jobs(delete: bool = Query(False)):
+    """
+    prunes scraping jobs and products if they're not associated
+
+    Args:
+        delete (bool) if delete is true will delete dangling products and scraping jobs
+    Returns:
+         dict: the scraping jobs and products that are dangling
+    """
+    db = get_db()
+    projection = {"url": 1}
+    scraping_jobs = list(db.scraping_jobs.find({}, projection))
+    scraping_job_urls = [job['url'] for job in  scraping_jobs]
+
+    products = list(db.products.find({}, projection))
+    product_urls = [p['url'] for p in products]
+
+    products_missing_jobs = []
+    jobs_missing_products = []
+    for p in products:
+        if p['url'] not in scraping_job_urls:
+            products_missing_jobs.append({
+                "_id": str(p['_id']),
+                "url": p['url']
+            })
+
+    for j in scraping_jobs:
+        if j['url'] not in product_urls:
+            jobs_missing_products.append({
+                "_id": str(j['_id']),
+                "url": j['url']
+            })
+
+    if delete:
+        db.scraping_jobs.delete_many({"_id": {"$in": [bson.ObjectId(job['_id']) for job in jobs_missing_products]}})
+        db.products.delete_many({"_id": {"$in": [bson.ObjectId(p['_id']) for p in products_missing_jobs]}})
+
+
+
+    return {
+        "products_missing_jobs": products_missing_jobs,
+        "jobs_missing_products": jobs_missing_products,
+        "deleted": delete
+    }
+
+
+@app.get("/admin/errors")
+def get_errors():
+    db = get_db()
+    scraping_errors = list(db.scraping_errors.find({}))
+    product_errors = list(db.products.find({"error": True}))
+
+    for s in scraping_errors:
+        s['_id'] = str(s['_id'])
+    for p in product_errors:
+        p['_id'] = str(p['_id'])
+
+    return {
+        "scraping_errors": scraping_errors,
+        "product_errors": product_errors
+    }
+
+
+@app.post("/admin/schema")
+def create_schema(schema: dict):
+    print(schema)
+
+
+@app.post("/admin/crawling-job")
+def create_crawling_job():
+    pass
 
 
