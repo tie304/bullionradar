@@ -1,9 +1,9 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: spot-price
+  name: aggregation-service
 spec:
-  schedule: "*/5 * * * *"
+  schedule: "*/10 * * * *" # every 10 mins 
   concurrencyPolicy: "Forbid"
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 3
@@ -12,8 +12,8 @@ spec:
       template:
         spec:
           containers:
-          - name: spot-price-service
-            image: tylerhanson1/spot_price_service
+          - name: aggregation-service
+            image: tylerhanson1/aggregation_service
             env:
               - name: database_url
                 valueFrom:

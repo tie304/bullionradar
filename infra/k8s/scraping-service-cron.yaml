@@ -1,9 +1,9 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: spot-price
+  name: scraping-service
 spec:
-  schedule: "*/5 * * * *"
+  schedule: "*/90 * * * *"
   concurrencyPolicy: "Forbid"
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 3
@@ -12,8 +12,8 @@ spec:
       template:
         spec:
           containers:
-          - name: spot-price-service
-            image: tylerhanson1/spot_price_service
+          - name: scraping-service
+            image: tylerhanson1/scraping_service
             env:
               - name: database_url
                 valueFrom:
