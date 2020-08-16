@@ -30,6 +30,8 @@ def apply_processing_to_production(run_id: str):
 
     processing_run = db.processing_runs.find_one({"_id": run_id})
     successful_runs = processing_run['processing_results']
+    scraping_jobs = []
+    products = []
 
     domain_map = {}
     for p in successful_runs:
@@ -38,12 +40,24 @@ def apply_processing_to_production(run_id: str):
             if hostname in r['domain']:
                 domain_map[hostname] = r['templates'].get("product") # TODO make work for any template
 
+
     for run in successful_runs:
-        db.products.update_one({"url": run['url']}, {"$set": run['product']}, upsert=True)
         hostname = clean_hostname(url=run['url'])
         scraping_data = domain_map.get(hostname)
-        db.scraping_jobs.update_one({"url": run['url']}, {"$set": {"scraping_metadata": scraping_data, "parent": hostname}}, upsert=True)
-    # update applied setting
+
+        scraping_jobs.append({
+                "url": run['url'],
+                "scraping_metadata": scraping_data,
+                "parent": hostname
+            })
+        product = run.get("product")
+        product["url"] = run["url"]
+        products.append(product)
+    
+
+
+    db.products.insert_many(products)
+    db.scraping_jobs.insert_many(scraping_jobs)
     db.processing_runs.update_one({"_id": run_id}, {"$set": {"applied": True}})
 
     return "successfully applied processing run"
@@ -69,6 +83,11 @@ def unapply_processing_run(run_id: str):
     # delete scraping job and products
     db.scraping_jobs.delete_many({"url": {"$in": urls}})
     db.products.delete_many({"url": {"$in": urls}})
+
+    result = db.processing_runs.update_one({"_id": ObjectId(run_id)}, {"$set": {"applied": False}})
+
+
+    return "processing run successfully un-applyed"
 
 
 

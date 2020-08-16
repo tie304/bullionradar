@@ -12,7 +12,8 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="frontend/templates")
 
-search_schema = {
+search_schema = { #TODO make dynamic
+    "metal_type": ["gold", "silver"],
     "bullion_size": ["1g", "2g", "2.5g", "1oz", "5oz", "10oz"],
     "bullion_form": ["coin", "round", "bar"]
 }
@@ -28,6 +29,7 @@ def read_item(request: Request,
 
     query = {"stock": True}
 
+    query["price_over_spot_percent"] = {"$exists": True}
     query["error"] =  {"$ne": True}
 
     if gold or silver:
@@ -53,7 +55,7 @@ def read_item(request: Request,
         prev_skip = 0
     else:
         prev_skip = skip - 50
-    return templates.TemplateResponse("search.html", {"request": request,
+    return templates.TemplateResponse("pages/search.html", {"request": request,
                                                       "search": {
                                                           "count": count,
                                                           "pagination_count": skip + len(products),
@@ -79,7 +81,7 @@ def read_item(request: Request,
 async def read_item(request: Request):
     db = get_db()
     spot_prices = db.singletons.find_one({"_id": "spot_prices"})
-    return templates.TemplateResponse("index.html", {"request": request,
+    return templates.TemplateResponse("pages/landing.html", {"request": request,
                                                      "search": {
                                                          "search_schema": search_schema,
                                                      },

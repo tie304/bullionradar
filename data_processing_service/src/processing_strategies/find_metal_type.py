@@ -15,9 +15,9 @@ def find_metal_type(title, description):
         count = count_indexes(form, title + description)
         instances[form] = count
 
-    if instances['gold'] > instances['silver'] and instances['gold'] > instances['platinum']:
+    if instances['gold'] > instances['silver']:
         return "gold"
-    elif instances['silver'] > instances['gold'] and instances['silver'] > instances['platinum']:
+    elif instances['silver'] > instances['gold']:
         return "silver"
 
     raise ValueError("unknown metal form")

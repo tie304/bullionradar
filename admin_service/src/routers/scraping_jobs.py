@@ -1,20 +1,31 @@
 from fastapi import APIRouter, HTTPException, Query
 from depends import get_db
 
+from src.models.schema_update import SchemaUpdate
+
 
 router = APIRouter()
 
 
-@router.put("/scraping-jobs/bulk")
-def update_scraping_service(schema_change: dict, domain: str = Query(None)):
+@router.put("/scraping-jobs/bulk/metadata")
+def update_scraping_service(schema_change: SchemaUpdate, domain: str = Query(None)):
     db = get_db()
 
-    # TODO validate schema
+    if not domain:
+        raise HTTPException(detail="Please provide a domain" ,status_code=400)
 
-    if not schema_change.get("scraping_metadata"):
-        raise HTTPException(status_code=400, detail="scraping metadata key not provided")
+    crawler_job = db.crawler_jobs.find_one({"domain": domain})
+    if not crawler_job:
+        raise HTTPException(status_code=404, detail="crawling job does not exist for domain")
+  
 
-    result = db.scraping_jobs.update_many({"parent": domain},  {"$set": {"scraping_metadata": schema_change.get("scraping_metadata")}})
+    db.crawler_jobs.update_one({"domain": domain}, {"$set": {
+            f"templates.{schema_change.template}": schema_change.schema_update
+        }})
+    
+
+    result = db.scraping_jobs.update_many({"parent": domain},  {"$set": {"scraping_metadata": schema_change.schema_update}})
+
 
     return str(result.matched_count) + " updated successfully"
 

@@ -1,18 +1,15 @@
 <form method="get" action="/api/products" class="search-box {{form_display}}">
           <h3>Search for:</h3>
           <div class="search-box__metal-filters">
-              {% if search['gold'] %}
-                <input type="checkbox" id="gold" name="gold" value="true" checked>
-              {% else %}
-                <input type="checkbox" id="gold" name="gold" value="true">
-              {% endif %}
-              <label for="gold">Gold</label><br>
-              {% if search['silver'] %}
-                <input type="checkbox" id="silver" name="silver" value="true" checked>
-              {% else %}
-                <input type="checkbox" id="silver" name="silver" value="true">
-              {% endif %}
-              <label for="silver">Silver</label><br>
+              {% for form in search['search_schema']['metal_type']%}
+                {% if search['gold'] and form == 'gold' or search['silver'] and form == 'silver' %}
+                  <input type="checkbox" id="{{form}}" name="{{form}}" value="true" checked>
+                {% else %}
+                  <input type="checkbox" id="{{form}}" name="{{form}}" value="true">
+                {% endif %}                
+                <label for="{{form}}">{{form}}</label><br>
+              {% endfor %}
+              
           </div>
           <div class="search-box__search-size">
             <select name="bullion_size" id="bullion_size">

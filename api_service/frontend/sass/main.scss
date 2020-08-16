@@ -18,12 +18,11 @@ $color_primary: #1652F0;
 $color_gold: #FFD700;
 
 $desktop_breakpoint: 1200px;
-$mobile_breakpoint: 768px;
+$mobile-breakpoint: 768px;
 
 @import "checkbox";
 @import "search_box";
 @import "header";
-@import "spot_prices";
 @import "products";
 @import "search-dot";
 @import "search_results";

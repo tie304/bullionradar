@@ -1,5 +1,6 @@
 import inspect
 import time
+import datetime
 import sys
 from typing import Any
 import traceback
@@ -105,9 +106,10 @@ db = get_db()
 processing_results = [] # results stored for batch insert later
 processing_errors = [] # errors relating to processing
 start = time.time()
-
+print("processing...")
 while True:
     data = list(db.crawl_dump.find().skip(SKIP).limit(PROCESSING_BATCH)) # curser object  is read once. need to cast to list
+    print(SKIP,  "-", SKIP + PROCESSING_BATCH)
     data_length = len(data)
     if data_length == 0:
         break
@@ -133,11 +135,12 @@ while True:
         processing_results.append(result)
     SKIP += PROCESSING_BATCH
 
-print(sys.getsizeof(processing_results))
 db.processing_runs.insert_one({
     "run_time_seconds": time.time() - start,
     "total_documents_processed": len(processing_results) + len(processing_errors),
     "total_processing_errors": len(processing_errors),
     "processing_errors": processing_errors,
-    "processing_results": processing_results
+    "processing_results": processing_results,
+    "date": datetime.datetime.utcnow(),
+    "applied": False
 })

@@ -36,6 +36,38 @@
   width: 100%;
   z-index: 99;
   top: 0;
+
+  &__spot_prices {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+
+    &--gold {
+      display: flex;
+      align-items: center;
+       font-size: 2rem;
+        & img {
+          height: 3rem;
+          margin-right: 0.5rem;
+        }
+    }
+
+    &--silver {
+      font-size: 2em;
+      display: flex;
+      align-items: center;
+      & img {
+          height: 3rem;
+          margin-right: 0.5rem;
+        }
+    }
+  }
+    @media all and (max-width: $mobile-breakpoint) {
+      &__spot_prices {
+        display: none;
+      }
+    }
   &__logo {
     font-size: 3rem;
     background-color: $color_primary;
